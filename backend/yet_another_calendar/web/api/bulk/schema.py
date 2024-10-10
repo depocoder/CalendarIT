@@ -13,7 +13,7 @@ class BulkResponse(BaseModel):
 
 
 class CalendarResponse(BulkResponse):
-    cached_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
+    cached_at: datetime.datetime = Field(default_factory=datetime.datetime.now, alias="cached_at")
 
     def get_hash(self) -> str:
         dump = BulkResponse(**self.model_dump(by_alias=True)).model_dump_json(by_alias=True)

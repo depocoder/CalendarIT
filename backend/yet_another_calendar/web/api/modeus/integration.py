@@ -5,6 +5,7 @@ from secrets import token_hex
 from typing import Any
 
 import httpx
+import reretry
 from bs4 import BeautifulSoup, Tag
 from fastapi import HTTPException
 from fastapi_cache.decorator import cache
@@ -71,6 +72,7 @@ async def get_auth_form(session: AsyncClient, username: str, password: str) -> T
     return form
 
 
+@reretry.retry(exceptions=httpx.TransportError, tries=settings.retry_tries, delay=settings.retry_delay)
 @cache(expire=settings.redis_jwt_time_live)
 async def login(username: str, __password: str, timeout: int = 15) -> str:
     """
@@ -121,6 +123,7 @@ def _extract_token_from_url(url: str, match_index: int = 1) -> str | None:
     return match[match_index]
 
 
+@reretry.retry(exceptions=httpx.TransportError, tries=settings.retry_tries, delay=settings.retry_delay)
 async def post_modeus(__jwt: str, body: Any, url_part: str, timeout: int = 15) -> str:
     session = AsyncClient(
         http2=True,

@@ -17,7 +17,7 @@ services:
     environment:
       YET_ANOTHER_CALENDAR_HOST: 0.0.0.0
       YET_ANOTHER_CALENDAR_REDIS_HOST: yet_another_calendar-redis
-      YET_ANOTHER_CALENDAR_RELOAD: "True"
+      LOGURU_DIAGNOSE: "False"
 
   redis:
     image: redis:latest

@@ -106,12 +106,11 @@ header .login-btn:hover {
 }
 
 .login-btn-log {
-    margin-top: 8px;
     width: 100px;
     position: relative;
     cursor: pointer;
     border: none;
-    margin-top: 6px;
+    margin: 6px auto;
     background-color: #5856d6;
     color: #fff;
     text-decoration: none;
@@ -131,12 +130,15 @@ header .login-btn:hover {
     flex-direction: column;
 }
 
-.login-netologiya {
-    margin-top: 24px;
+.login-netologiya, .login-fio {
+    max-width: 320px;
+    width: 100%;
+    margin: 24px auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     flex-direction: column;
+    text-align: left;
 }
 
 .calendar {
@@ -208,4 +210,9 @@ header .login-btn:hover {
     cursor: pointer;
     background-color: #5856d6;
     color: #fff;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }

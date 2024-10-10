@@ -1,59 +1,45 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Routes,
-  Route,
-  Router,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
-import LoginRoute from "./routes/LoginRoute";
-import CalendarRoute from "./routes/CalendarRoute";
+import ReactDOM from "react-dom/client";
 
-import Header from "./components/Header/Header";
+import LoginRoute from "./pages/LoginRoute";
+import CalendarRoute from "./pages/CalendarRoute";
+
 import "./index.css";
-import ModeusLoginForm from "./components/Login/ModeusLoginForm";
+import PrivateRoute from "./components/Calendar/PrivateRoute";
+
+const checkAuth = () => {
+  // Проверка наличия токена в localStorage
+  return localStorage.getItem("token");
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <div className="wrapper">
-        <Header />
-        <div className="main-calendar">
-          <CalendarRoute />
-        </div>
-      </div>
-    ),
+    {
+     path: "/",
+     element: checkAuth() ? <CalendarRoute /> : <LoginRoute />,
+    // Если токен есть — перенаправляем на /calendar, если нет — на /login
   },
   {
     path: "/login",
-    element: <LoginRoute />,
+    element: checkAuth() ? <CalendarRoute /> : <LoginRoute />,
+      // Перенаправление на календарь, если уже залогинен
   },
   {
     path: "/calendar",
-    element: <CalendarRoute />,
+    element: (
+      <PrivateRoute>
+        <CalendarRoute />
+      </PrivateRoute>
+    ), // Защищаем страницу календаря
   },
 ]);
 
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>,
+  </React.StrictMode>
 );
-
-const App = () => {
-  return (
-    <dev>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginRoute />} />
-        </Routes>
-      </Router>
-    </dev>
-  );
-};
 
 reportWebVitals();

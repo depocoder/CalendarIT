@@ -16,7 +16,7 @@ class NetologyCreds(BaseModel):
     """Netology creds."""
 
     username: str
-    password: str
+    password: str = Field(repr=False)
 
 
 class NetologyCookies(BaseModel):

@@ -17,7 +17,7 @@ class ModeusCreds(BaseModel):
     """Modeus creds."""
 
     username: str
-    password: str
+    password: str = Field(repr=False)
 
 class ModeusTimeBody(BaseModel):
     time_min: datetime.datetime = Field(alias="timeMin", examples=["2024-09-23T00:00:00+03:00"])
@@ -66,17 +66,19 @@ class FullModeusPersonSearch(BaseModel):
 
 class Location(BaseModel):
     id: uuid.UUID = Field(alias="eventId")
-    custom_location: str = Field(alias="customLocation")
+    custom_location: Optional[str] = Field(alias="customLocation", default=None)
 
     @computed_field  # type: ignore
     @property
     def is_lxp(self) -> float:
+        if not self.custom_location:
+            return True
         return self.custom_location == 'LXP'
 
 
 class Event(BaseModel):
     name: str = Field(alias="name")
-    name_short: str = Field(alias="nameShort")
+    name_short: Optional[str] = Field(alias="nameShort", default=None)
     description: Optional[str] = Field(alias="description")
     start_time: datetime.datetime = Field(alias="start")
     end_time: datetime.datetime = Field(alias="end")
@@ -137,6 +139,8 @@ class ModeusCalendar(BaseModel):
             except KeyError:
                 teacher_full_name = 'unknown'
             location = locations[event.id]
+            if location.is_lxp:
+                continue
             full_events.append(FullEvent(**{
                 "teacher_full_name": teacher_full_name,
                 **event.model_dump(by_alias=True), **location.model_dump(by_alias=True),

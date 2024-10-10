@@ -53,6 +53,9 @@ class Settings(BaseSettings):
     redis_events_time_live: int = 60 * 60 * 24 * 14  # 2 weeks
     redis_prefix: str = 'FastAPI-redis'
 
+    retry_tries: int = 5
+    retry_delay: int = 3
+
     modeus_username: str = env.str("MODEUS_USERNAME")
     modeus_password: str = env.str("MODEUS_PASSWORD")
     netology_default_course_id: int = env.int("NETOLOGY_DEFAULT_COURSE_ID", 45526)

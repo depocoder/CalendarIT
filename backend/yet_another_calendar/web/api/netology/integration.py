@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import Any
 
 import httpx
+import reretry
 from fastapi import HTTPException
 from httpx import AsyncClient
 from starlette import status
@@ -13,6 +14,7 @@ from yet_another_calendar.settings import settings
 from ..modeus.schema import ModeusTimeBody
 
 
+@reretry.retry(exceptions=httpx.TransportError, tries=settings.retry_tries, delay=settings.retry_delay)
 async def auth_netology(username: str, password: str, timeout: int = 15) -> schema.NetologyCookies:
     """
     Auth in Netology, required username and password.
@@ -42,6 +44,7 @@ async def auth_netology(username: str, password: str, timeout: int = 15) -> sche
     return schema.NetologyCookies(**session.cookies)
 
 
+@reretry.retry(exceptions=httpx.TransportError, tries=settings.retry_tries, delay=settings.retry_delay)
 async def send_request(
         cookies: schema.NetologyCookies, request_settings: dict[str, Any], timeout: int = 15) -> dict[str, Any]:
     """Send request from httpx."""
@@ -98,6 +101,7 @@ async def get_program_ids(
         })
 
     return schema.ProfessionResponse.model_validate(response).get_lesson_ids()
+
 
 async def get_calendar(
         cookies: schema.NetologyCookies,
